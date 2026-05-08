@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>靜心 · 養心</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500;700&family=Noto+Sans+TC:wght@300;400&family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --paper: #f7f2e8;
+    --warm: #c8a96e;
+    --red: #b85450;
+    --muted: #8a7d6b;
+    --soft: #e8dfc8;
+    --glow: rgba(200,169,110,0.18);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Noto Serif TC', serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Texture overlay */
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(200,169,110,0.12) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 90%, rgba(184,84,80,0.06) 0%, transparent 60%);
+    pointer-events:none; z-index:0;
+  }
+
+  .grain {
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.04;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px;
+  }
+
+  /* Ink brush strokes decoration */
+  .ink-top {
+    position:fixed; top:0; right:0; width:320px; height:320px; z-index:0; opacity:0.06; pointer-events:none;
+    background: radial-gradient(ellipse at top right, var(--ink) 0%, transparent 70%);
+    border-radius: 0 0 0 100%;
+  }
+
+  .container {
+    position: relative; z-index:2;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 60px 24px 80px;
+  }
+
+  /* Header */
+  header {
+    text-align: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.9s ease both;
+  }
+
+  .logo-char {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: clamp(56px, 12vw, 88px);
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: 0.12em;
+    position: relative;
+    display: inline-block;
+  }
+
+  .logo-char::after {
+    content:'';
+    display:block;
+    width:60%;
+    height:2px;
+    background: linear-gradient(90deg, transparent, var(--warm), transparent);
+    margin: 12px auto 0;
+  }
+
+  .subtitle {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.35em;
+    margin-top: 16px;
+    font-weight: 300;
+  }
+
+  /* Date */
+  .date-line {
+    text-align:center;
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.2em;
+    margin-bottom: 48px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    animation: fadeDown 0.9s 0.1s ease both;
+  }
+
+  /* Emotion selector */
+  .section-label {
+    text-align: center;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    animation: fadeDown 0.9s 0.2s ease both;
+  }
+
+  .emotion-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 56px;
+    animation: fadeDown 0.9s 0.3s ease both;
+  }
+
+  .emotion-btn {
+    background: transparent;
+    border: 1.5px solid rgba(138,125,107,0.3);
+    border-radius: 40px;
+    padding: 10px 22px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 14px;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .emotion-btn .icon { font-size: 16px; }
+
+  .emotion-btn::before {
+    content:'';
+    position:absolute; inset:0;
+    background: var(--soft);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    z-index:-1;
+    border-radius: 40px;
+  }
+
+  .emotion-btn:hover {
+    border-color: var(--warm);
+    color: var(--ink);
+  }
+  .emotion-btn:hover::before { transform: scaleX(1); }
+
+  .emotion-btn.active {
+    background: var(--ink);
+    border-color: var(--ink);
+    color: var(--paper);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26,18,8,0.18);
+  }
+  .emotion-btn.active::before { display:none; }
+
+  /* Response card */
+  .response-area {
+    min-height: 320px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .empty-state {
+    text-align: center;
+    color: var(--muted);
+    font-size: 14px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.15em;
+    opacity: 0.7;
+  }
+
+  .empty-state .lotus { font-size: 36px; display:block; margin-bottom:16px; opacity:0.5; }
+
+  .card {
+    background: rgba(255,252,245,0.7);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(200,169,110,0.25);
+    border-radius: 4px;
+    padding: 48px 48px 40px;
+    width: 100%;
+    box-shadow: 0 4px 40px rgba(26,18,8,0.06), 0 1px 4px rgba(26,18,8,0.04);
+    animation: cardIn 0.6s cubic-bezier(0.22,1,0.36,1) both;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .card::before {
+    content:'';
+    position:absolute;
+    top:0; left:0; right:0;
+    height:3px;
+    background: linear-gradient(90deg, transparent 0%, var(--warm) 50%, transparent 100%);
+  }
+
+  .card-emotion-tag {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--warm);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-weight: 300;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .card-emotion-tag::after {
+    content:'';
+    flex:1;
+    height:1px;
+    background: linear-gradient(90deg, rgba(200,169,110,0.4), transparent);
+  }
+
+  .card-main-text {
+    font-size: clamp(15px, 2.5vw, 17px);
+    line-height: 2.1;
+    color: var(--ink);
+    margin-bottom: 32px;
+    font-weight: 400;
+  }
+
+  .card-main-text strong {
+    color: var(--red);
+    font-weight: 500;
+  }
+
+  .quote-block {
+    border-left: 2px solid var(--warm);
+    padding: 16px 0 16px 24px;
+    margin: 28px 0;
+    font-size: 14px;
+    line-height: 2;
+    color: var(--muted);
+    font-style: italic;
+    font-family: 'Ma Shan Zheng', cursive;
+    font-style: normal;
+    font-size: 17px;
+    letter-spacing: 0.05em;
+  }
+
+  .quote-source {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    font-style: normal;
+    letter-spacing: 0.2em;
+    color: var(--warm);
+    margin-top: 8px;
+  }
+
+  .actions-section {
+    margin-top: 28px;
+    padding-top: 24px;
+    border-top: 1px dashed rgba(138,125,107,0.2);
+  }
+
+  .actions-label {
+    font-size: 11px;
+    letter-spacing: 0.35em;
+    color: var(--warm);
+    font-family: 'Noto Sans TC', sans-serif;
+    margin-bottom: 16px;
+    font-weight: 300;
+  }
+
+  .action-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-list li {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--muted);
+    padding-left: 18px;
+    position: relative;
+    line-height: 1.8;
+  }
+
+  .action-list li::before {
+    content:'◆';
+    position:absolute; left:0;
+    color: var(--warm);
+    font-size: 7px;
+    top:6px;
+  }
+
+  /* Meditation button */
+  .meditation-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 32px;
+    background: transparent;
+    border: 1.5px solid var(--ink);
+    border-radius: 3px;
+    padding: 10px 24px;
+    font-family: 'Noto Serif TC', serif;
+    font-size: 13px;
+    color: var(--ink);
+    cursor: pointer;
+    letter-spacing: 0.2em;
+    transition: all 0.25s ease;
+  }
+
+  .meditation-btn:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  /* Meditation overlay */
+  .meditation-overlay {
+    display: none;
+    position: fixed; inset:0; z-index:100;
+    background: rgba(26,18,8,0.92);
+    backdrop-filter: blur(8px);
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .meditation-overlay.show { display:flex; animation: fadeIn 0.5s ease; }
+
+  .med-title {
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 32px;
+    color: var(--warm);
+    margin-bottom: 8px;
+    letter-spacing: 0.2em;
+  }
+
+  .med-subtitle {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    color: rgba(247,242,232,0.5);
+    letter-spacing: 0.35em;
+    margin-bottom: 48px;
+    font-weight: 300;
+  }
+
+  .breath-circle {
+    width: 160px; height: 160px;
+    border: 1.5px solid rgba(200,169,110,0.4);
+    border-radius: 50%;
+    display: flex; align-items:center; justify-content:center;
+    position: relative;
+    margin: 0 auto 40px;
+  }
+
+  .breath-circle-inner {
+    width: 80px; height: 80px;
+    background: radial-gradient(circle, rgba(200,169,110,0.6) 0%, rgba(200,169,110,0.1) 100%);
+    border-radius: 50%;
+    animation: none;
+  }
+
+  .breath-circle-inner.inhale { animation: breathIn 4s ease-in-out forwards; }
+  .breath-circle-inner.hold   { animation: breathHold 2s ease forwards; }
+  .breath-circle-inner.exhale { animation: breathOut 6s ease-in-out forwards; }
+
+  .breath-label {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 22px;
+    color: var(--paper);
+    margin-bottom: 12px;
+    letter-spacing: 0.25em;
+  }
+
+  .breath-count {
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 52px;
+    color: var(--warm);
+    font-weight: 300;
+    line-height: 1;
+    margin-bottom: 32px;
+  }
+
+  .med-text {
+    font-family: 'Noto Serif TC', serif;
+    font-size: 15px;
+    color: rgba(247,242,232,0.75);
+    line-height: 2.2;
+    max-width: 480px;
+    margin-bottom: 40px;
+  }
+
+  .med-close {
+    background: transparent;
+    border: 1px solid rgba(200,169,110,0.4);
+    color: rgba(247,242,232,0.5);
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 12px;
+    padding: 10px 28px;
+    letter-spacing: 0.3em;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.25s;
+  }
+
+  .med-close:hover { border-color: var(--warm); color: var(--warm); }
+
+  /* Footer */
+  footer {
+    text-align: center;
+    margin-top: 80px;
+    font-family: 'Noto Sans TC', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.3em;
+    font-weight: 300;
+    opacity: 0.6;
+    animation: fadeDown 1s 0.5s ease both;
+  }
+
+  /* Animations */
+  @keyframes fadeDown {
+    from { opacity:0; transform: translateY(-16px); }
+    to   { opacity:1; transform: translateY(0); }
+  }
+  @keyframes cardIn {
+    from { opacity:0; transform: translateY(24px) scale(0.98); }
+    to   { opacity:1; transform: translateY(0) scale(1); }
+  }
+  @keyframes fadeIn {
+    from { opacity:0; } to { opacity:1; }
+  }
+  @keyframes breathIn {
+    from { transform: scale(1); opacity:0.6; }
+    to   { transform: scale(1.9); opacity:1; }
+  }
+  @keyframes breathHold {
+    from { transform: scale(1.9); opacity:1; }
+    to   { transform: scale(1.9); opacity:1; }
+  }
+  @keyframes breathOut {
+    from { transform: scale(1.9); opacity:1; }
+    to   { transform: scale(1); opacity:0.6; }
+  }
+
+  @media (max-width: 600px) {
+    .card { padding: 32px 24px 28px; }
+    .emotion-grid { gap: 8px; }
+    .emotion-btn { padding: 8px 16px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+<div class="grain"></div>
+<div class="ink-top"></div>
+
+<div class="container">
+  <header>
+    <div class="logo-char">靜心</div>
+    <p class="subtitle">INNER PEACE · 養心日記</p>
+  </header>
+
+  <div class="date-line" id="dateLine"></div>
+
+  <div class="section-label">你現在的心情是？</div>
+
+  <div class="emotion-grid">
+    <button class="emotion-btn" data-emotion="anxious" onclick="selectEmotion(this)">
+      <span class="icon">🌊</span> 焦慮不安
+    </button>
+    <button class="emotion-btn" data-emotion="chaotic" onclick="selectEmotion(this)">
+      <span class="icon">🌀</span> 心思混亂
+    </button>
+    <button class="emotion-btn" data-emotion="lost" onclick="selectEmotion(this)">
+      <span class="icon">🌫</span> 迷失方向
+    </button>
+    <button class="emotion-btn" data-emotion="tired" onclick="selectEmotion(this)">
+      <span class="icon">🍂</span> 身心俱疲
+    </button>
+    <button class="emotion-btn" data-emotion="sad" onclick="selectEmotion(this)">
+      <span class="icon">🌧</span> 低落悲傷
+    </button>
+    <button class="emotion-btn" data-emotion="angry" onclick="selectEmotion(this)">
+      <span class="icon">🔥</span> 憤怒委屈
+    </button>
+    <button class="emotion-btn" data-emotion="lonely" onclick="selectEmotion(this)">
+      <span class="icon">🕯</span> 孤單寂寞
+    </button>
+    <button class="emotion-btn" data-emotion="grateful" onclick="selectEmotion(this)">
+      <span class="icon">🌸</span> 感恩平靜
+    </button>
+    <button class="emotion-btn" data-emotion="stuck" onclick="selectEmotion(this)">
+      <span class="icon">⛰</span> 卡關停滯
+    </button>
+    <button class="emotion-btn" data-emotion="hopeful" onclick="selectEmotion(this)">
+      <span class="icon">☀️</span> 想要改變
+    </button>
+  </div>
+
+  <div class="response-area" id="responseArea">
+    <div class="empty-state">
+      <span class="lotus">🪷</span>
+      選擇你此刻的心情，<br>讓文字與你同在
+    </div>
+  </div>
+
+  <footer>願你此刻安好 · 一切都會過去 · 一切都是恩典</footer>
+</div>
+
+<!-- Meditation Overlay -->
+<div class="meditation-overlay" id="meditationOverlay">
+  <div class="med-title">靜觀呼吸</div>
+  <div class="med-subtitle">MINDFUL BREATHING</div>
+  <div class="breath-circle">
+    <div class="breath-circle-inner" id="breathCircle"></div>
+  </div>
+  <div class="breath-label" id="breathLabel">準備好了嗎？</div>
+  <div class="breath-count" id="breathCount">—</div>
+  <div class="med-text" id="medText">找個舒服的姿勢坐好，輕輕閉上眼睛，跟著節奏一起呼吸。</div>
+  <button class="med-close" onclick="closeMeditation()">結束練習 · CLOSE</button>
+</div>
+
+<script>
+const emotions = {
+  anxious: {
+    tag: '🌊 焦慮不安',
+    main: `<strong>Let them. 隨他去。</strong><br><br>
+      你所擔心的事，大多數永遠不會發生；而那些真正發生的，你也會有辦法面對。<br>
+      事情不在掌控中，並不代表你失去了力量——而是在提醒你，放手本身就是一種智慧。<br><br>
+      承認「我控制不了這件事」，然後把注意力拉回你能做的事上，哪怕只有一件小事。`,
+    quote: '以眾生之苦為苦，以眾生之樂為樂，然後方能安住自心。',
+    source: '《維摩詰經》',
+    actions: [
+      '打開窗戶，讓新鮮的空氣進來，深呼吸三口',
+      '把你擔心的事寫在紙上，然後問自己：三年後這件事還重要嗎？',
+      '整理一個小角落，抽屜或桌面——乾淨的空間帶來清晰的頭腦',
+      '想想這個月有飯吃、有地方睡，這已經是了不起的事了'
+    ],
+    meditation: '我們來做一個「放下練習」——想像你的憂慮是一片雲，你只是看著它，不需要跟著它走。'
+  },
+  chaotic: {
+    tag: '🌀 心思混亂',
+    main: `思緒紛飛的時候，不要試圖整理每一個念頭——那只會更亂。<br><br>
+      <strong>過去的已走，未來的未到，你只需要這一刻。</strong><br><br>
+      試試這個：把手放在胸口，感受心跳，你現在活著，現在安全，這就夠了。`,
+    quote: '過去心不可得，現在心不可得，未來心不可得。',
+    source: '《金剛經》',
+    actions: [
+      '把腦子裡所有的事都倒在紙上，不用整理，只管寫',
+      '出門走10分鐘，不帶耳機，只是走',
+      '喝一杯溫水，慢慢喝，感受每一口的溫度',
+      '做一件最簡單的家事，洗碗或摺衣服，讓雙手有事做'
+    ],
+    meditation: '我們做一個「錨定練習」——把注意力帶到腳踩地板的感覺，感受重力，你在這裡，你是安全的。'
+  },
+  lost: {
+    tag: '🌫 迷失方向',
+    main: `迷路不是失敗，有時候是老路走膩了，<strong>靈魂在等你找到一條更真實的路。</strong><br><br>
+      了凡先生被算命師說定了一生的命運，卻因為遇見雲谷禪師而改寫了一切——因為他願意重新問自己：我真正想成為什麼樣的人？<br><br>
+      不知道往哪走的時候，就往「讓自己更好」的方向走，哪怕只是一小步。`,
+    quote: '命由我作，福自己求。一切福田，不離方寸。',
+    source: '《了凡四訓》',
+    actions: [
+      '列出三件讓你感到有活力的事，不管看起來多微小',
+      '想想半年後你希望自己有什麼不同，寫下一個具體的改變',
+      '今天學一件你從來沒學過的小事',
+      '想想如何讓自己更美麗、更豐盛——從今天能做到的一件事開始'
+    ],
+    meditation: '閉上眼睛，想像一個你尊敬的人，問他：「此刻你會對我說什麼？」靜靜聆聽內心的回答。'
+  },
+  tired: {
+    tag: '🍂 身心俱疲',
+    main: `你已經很努力了。<strong>累了，就停下來。</strong><br><br>
+      曾國藩曾說，天下之事，無難而不能，無易而不懈。但他也說，凡事留餘地，雅量能容人——對別人如此，對自己更是。<br><br>
+      你不需要一直撐著。允許自己充電，才能繼續走得遠。`,
+    quote: '養得胸中一種恬靜，才是受用。不計較得失，方是大自在。',
+    source: '曾國藩《家書》',
+    actions: [
+      '今天允許自己少做一件事，什麼都不做也是做了一件事',
+      '躺下來，閉眼10分鐘，什麼都不想，只是休息',
+      '吃一頓你喜歡的食物，慢慢吃，感謝自己一直以來的付出',
+      '泡個腳，或者沖個舒服的熱水澡'
+    ],
+    meditation: '讓我們做一個「身體掃描」——從腳趾開始，一個部位一個部位地放鬆，讓緊繃慢慢融化。'
+  },
+  sad: {
+    tag: '🌧 低落悲傷',
+    main: `<strong>眼淚不是軟弱，是身體在照顧你。</strong><br><br>
+      悲傷需要被感受，不需要被解決。就像天氣，烏雲不會永遠在，但你不需要假裝它不存在。<br><br>
+      季羨林說，人生不如意十之八九，可與人言者一二。也許此刻的傷，正是讓你更深邃的過程。`,
+    quote: '不以物喜，不以己悲。居廟堂之高則憂其民，處江湖之遠則憂其君。',
+    source: '范仲淹《岳陽樓記》',
+    actions: [
+      '允許自己哭，哭完了再說',
+      '把你想對某個人說的話寫出來，不必寄出去',
+      '找一首你喜歡的老歌，讓音樂陪著你',
+      '今天做一件讓自己感到美麗的事，換件漂亮的衣服也好'
+    ],
+    meditation: '讓我們做一個「慈心冥想」——先把溫暖送給自己，願我平安，願我健康，願我幸福。'
+  },
+  angry: {
+    tag: '🔥 憤怒委屈',
+    main: `你的憤怒是合理的，那是一個訊號，提醒你某條界線被越過了，或者你在乎的東西受到了威脅。<br><br>
+      <strong>但火燒得太久，燒的是自己。</strong><br><br>
+      蘇東坡一生被貶謫，卻依然寫出最美的詩詞。他說：此心安處是吾鄉。憤怒是暫時的情緒，你的靈魂比這個更大。`,
+    quote: '竹杖芒鞋輕勝馬，誰怕？一蓑煙雨任平生。',
+    source: '蘇軾《定風波》',
+    actions: [
+      '先離開那個讓你憤怒的空間，哪怕只是到另一個房間',
+      '做10個大力的深呼吸，把氣全部吐出去',
+      '把你的委屈完整地寫下來，寫清楚「我希望對方怎麼對待我」',
+      '等怒火稍退，再決定要不要回應——很多傷害是在衝動中造成的'
+    ],
+    meditation: '我們做一個「釋放練習」——想像憤怒是身體裡的熱，每次呼氣，就把一點熱釋放出去。'
+  },
+  lonely: {
+    tag: '🕯 孤單寂寞',
+    main: `孤單有時候不是因為沒有人，而是因為<strong>還沒有找到懂你的人。</strong><br><br>
+      王陽明說，你未看此花時，此花與汝同歸於寂。有些花，是要等待有緣人才能看見的。<br><br>
+      先成為你自己想遇見的那個人——有趣、豐富、溫柔——人自然會被吸引過來。`,
+    quote: '此心光明，亦復何言。',
+    source: '王陽明·臨終遺言',
+    actions: [
+      '傳訊息給一個你很久沒聯絡的人，說一句「最近在幹嘛」',
+      '去一個你喜歡的咖啡店坐坐，讓人聲陪著你',
+      '學一件能讓你認識新朋友的事，讀書會或興趣課',
+      '想想讓自己更有趣的方向——你想培養什麼新的能力或愛好？'
+    ],
+    meditation: '我們做一個「連結冥想」——想像有一條溫暖的金色線，連結著世界上所有此刻也感到孤單的人。你們在這一刻，彼此相陪。'
+  },
+  grateful: {
+    tag: '🌸 感恩平靜',
+    main: `此刻的平靜，是你努力過來的禮物。<br><br>
+      <strong>懂得感恩的人，是有慧眼的人。</strong> 能看見好，本身就是一種恩賜。<br><br>
+      《了凡四訓》說，命由我造，相由心生，常存感恩之心，天地自然回饋於你。這份平靜，讓它成為你的根基。`,
+    quote: '知足者富。強行者有志。不失其所者久。死而不亡者壽。',
+    source: '老子《道德經》',
+    actions: [
+      '寫下今天三件感謝的事，不論多小',
+      '把這份平靜分享給一個你在乎的人，說一句暖心的話',
+      '想想接下來想創造什麼——更美麗的生活從這個平靜的基礎開始',
+      '去做一件你一直想做卻沒做的事，今天是好日子'
+    ],
+    meditation: '我們做一個「感恩擴展」——從心裡慢慢升起感謝，先謝謝身體，再謝謝今天，再謝謝所有的一切。'
+  },
+  stuck: {
+    tag: '⛰ 卡關停滯',
+    main: `卡住的感覺，往往代表你<strong>正站在一個轉折點上。</strong><br><br>
+      水遇到石頭不是停止，是在找新的方向流去。<br><br>
+      很多時候卡關是因為我們用同一個思維試圖解決問題。換一個角度：不問「我怎麼做到」，改問「有哪種人能輕鬆做到這件事？他怎麼想？」`,
+    quote: '天下難事，必作於易；天下大事，必作於細。',
+    source: '老子《道德經》',
+    actions: [
+      '把這件事拆成最小的下一步，小到荒謬——比如「打開那個文件」就算完成',
+      '問問身邊做到的人是怎麼想這件事的',
+      '休息一天，讓大腦在背景處理，答案常常在放鬆時浮現',
+      '想想增加財富和提升自己的方式，卡關也許是在叫你升級'
+    ],
+    meditation: '閉上眼睛，想像這個困難是一座山，你站在山腳，感受腳下的土地，然後問山：你要告訴我什麼？'
+  },
+  hopeful: {
+    tag: '☀️ 想要改變',
+    main: `想要改變的念頭，是最珍貴的種子。<strong>不要等準備好了才開始。</strong><br><br>
+      袁了凡在遇見禪師之前，活在命運的框架裡；之後他每天做善事、記功過簿，一筆一筆積累——多年後，算命先生說他命中無子，他有了兒子；說他短命，他活到了古稀。<br><br>
+      改變不是一件大事，是每天一件小的、對的事，疊加而成。`,
+    quote: '勿以善小而不為，勿以惡小而為之。',
+    source: '劉備·臨終告誡劉禪',
+    actions: [
+      '今天就選一件想改變的事，做一個最小的開始',
+      '把你想變成的樣子寫下來——更美、更富足、更自在',
+      '計算這個月你的財務狀況，想想如何增加一個收入來源',
+      '讓外表反映你想成為的樣子——打扮好自己，美麗帶來能量'
+    ],
+    meditation: '閉上眼睛，想像一年後的你——那個更好的你在微笑，他/她想對現在的你說什麼？'
+  }
+};
+
+// Meditation scripts
+const medScripts = {
+  anxious: {
+    steps: [
+      { phase:'吸氣', duration:4, text:'把一切煩憂放到身體之外，只是呼吸' },
+      { phase:'停留', duration:2, text:'讓這份平靜充滿你' },
+      { phase:'呼氣', duration:6, text:'把焦慮慢慢呼出去，隨他去' }
+    ]
+  },
+  default: {
+    steps: [
+      { phase:'吸氣', duration:4, text:'全神貫注在這一口氣' },
+      { phase:'停留', duration:2, text:'安住當下' },
+      { phase:'呼氣', duration:6, text:'放下一切，輕輕呼出' }
+    ]
+  }
+};
+
+let currentEmotion = null;
+let medTimer = null;
+let medRunning = false;
+
+function updateDate() {
+  const now = new Date();
+  const days = ['日','一','二','三','四','五','六'];
+  const y = now.getFullYear();
+  const m = String(now.getMonth()+1).padStart(2,'0');
+  const d = String(now.getDate()).padStart(2,'0');
+  document.getElementById('dateLine').textContent =
+    `${y} 年 ${m} 月 ${d} 日 · 星期${days[now.getDay()]}`;
+}
+
+function selectEmotion(btn) {
+  document.querySelectorAll('.emotion-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentEmotion = btn.dataset.emotion;
+  showResponse(currentEmotion);
+}
+
+function showResponse(key) {
+  const e = emotions[key];
+  const ra = document.getElementById('responseArea');
+
+  ra.innerHTML = `
+    <div class="card">
+      <div class="card-emotion-tag">${e.tag}</div>
+      <div class="card-main-text">${e.main}</div>
+      <div class="quote-block">
+        ${e.quote}
+        <div class="quote-source">—— ${e.source}</div>
+      </div>
+      <div class="actions-section">
+        <div class="actions-label">✦ 此刻可以做的事</div>
+        <ul class="action-list">
+          ${e.actions.map(a => `<li>${a}</li>`).join('')}
+        </ul>
+      </div>
+      <button class="meditation-btn" onclick="startMeditation('${key}')">
+        🌙 引導冥想練習
+      </button>
+    </div>
+  `;
+}
+
+function startMeditation(key) {
+  document.getElementById('meditationOverlay').classList.add('show');
+  const script = medScripts[key] || medScripts.default;
+  const e = emotions[key];
+  document.getElementById('medText').textContent = e.meditation;
+  runBreathCycle(script.steps, 0, 3);
+}
+
+function runBreathCycle(steps, stepIdx, cyclesLeft) {
+  if (!document.getElementById('meditationOverlay').classList.contains('show')) return;
+  if (cyclesLeft <= 0) {
+    document.getElementById('breathLabel').textContent = '做得很好 🌸';
+    document.getElementById('breathCount').textContent = '✦';
+    document.getElementById('medText').textContent = '慢慢回到正常呼吸，感受此刻的寧靜。';
+    return;
+  }
+
+  const step = steps[stepIdx];
+  const circle = document.getElementById('breathCircle');
+  const label = document.getElementById('breathLabel');
+  const count = document.getElementById('breathCount');
+
+  label.textContent = step.phase;
+  circle.className = 'breath-circle-inner';
+  void circle.offsetWidth;
+
+  if (step.phase === '吸氣') circle.classList.add('inhale');
+  else if (step.phase === '停留') circle.classList.add('hold');
+  else circle.classList.add('exhale');
+
+  let t = step.duration;
+  count.textContent = t;
+  const interval = setInterval(() => {
+    t--;
+    if (t > 0) count.textContent = t;
+    else {
+      clearInterval(interval);
+      const nextStep = (stepIdx + 1) % steps.length;
+      const nextCycles = nextStep === 0 ? cyclesLeft - 1 : cyclesLeft;
+      setTimeout(() => runBreathCycle(steps, nextStep, nextCycles), 200);
+    }
+  }, 1000);
+}
+
+function closeMeditation() {
+  document.getElementById('meditationOverlay').classList.remove('show');
+}
+
+updateDate();
+</script>
+</body>
+</html>
