@@ -607,6 +607,242 @@
         font-size: 13px;
       }
     }
+
+    /* ── Affirmation Section ── */
+    .affirmation-section {
+      margin-top: 72px;
+      animation: fadeDown 0.9s 0.4s ease both;
+    }
+
+    .affirmation-divider {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .affirmation-divider::before,
+    .affirmation-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200, 169, 110, 0.35), transparent);
+    }
+
+    .affirmation-divider-text {
+      font-size: 11px;
+      letter-spacing: 0.45em;
+      color: var(--warm);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-weight: 300;
+      white-space: nowrap;
+    }
+
+    .affirmation-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+
+    .affirm-btn {
+      background: transparent;
+      border: 1px solid rgba(200, 169, 110, 0.3);
+      border-radius: 3px;
+      padding: 9px 18px;
+      font-family: 'Noto Serif TC', serif;
+      font-size: 13px;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      letter-spacing: 0.05em;
+    }
+
+    .affirm-btn:hover {
+      border-color: var(--warm);
+      color: var(--warm);
+      background: rgba(200, 169, 110, 0.06);
+    }
+
+    .affirm-btn.active {
+      background: linear-gradient(135deg, rgba(200, 169, 110, 0.15), rgba(200, 169, 110, 0.05));
+      border-color: var(--warm);
+      color: var(--ink);
+    }
+
+    /* Affirmation overlay */
+    .affirm-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      background: rgba(10, 7, 3, 0.94);
+      backdrop-filter: blur(12px);
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 40px;
+    }
+
+    .affirm-overlay.show {
+      display: flex;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .affirm-stars {
+      font-size: 20px;
+      letter-spacing: 0.5em;
+      margin-bottom: 40px;
+      opacity: 0.6;
+      animation: shimmer 3s ease-in-out infinite;
+    }
+
+    .affirm-main-text {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: clamp(28px, 6vw, 48px);
+      color: var(--paper);
+      line-height: 1.6;
+      max-width: 560px;
+      margin-bottom: 16px;
+      letter-spacing: 0.08em;
+      animation: affirmIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .affirm-main-text em {
+      color: var(--warm);
+      font-style: normal;
+    }
+
+    .affirm-sub-text {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 14px;
+      color: rgba(247, 242, 232, 0.5);
+      line-height: 2.2;
+      max-width: 480px;
+      margin-bottom: 12px;
+      animation: affirmIn 0.7s 0.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .affirm-quote {
+      font-family: 'Ma Shan Zheng', cursive;
+      font-size: 16px;
+      color: rgba(200, 169, 110, 0.7);
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+      animation: affirmIn 0.7s 0.2s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .affirm-source {
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 11px;
+      color: rgba(200, 169, 110, 0.45);
+      letter-spacing: 0.3em;
+      margin-bottom: 48px;
+      animation: affirmIn 0.7s 0.25s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .affirm-repeat-btn {
+      background: transparent;
+      border: 1px solid rgba(200, 169, 110, 0.35);
+      color: rgba(200, 169, 110, 0.6);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 11px;
+      padding: 9px 24px;
+      letter-spacing: 0.35em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.25s;
+      margin-right: 12px;
+    }
+
+    .affirm-repeat-btn:hover {
+      border-color: var(--warm);
+      color: var(--warm);
+    }
+
+    .affirm-close {
+      background: transparent;
+      border: 1px solid rgba(247, 242, 232, 0.15);
+      color: rgba(247, 242, 232, 0.3);
+      font-family: 'Noto Sans TC', sans-serif;
+      font-size: 11px;
+      padding: 9px 24px;
+      letter-spacing: 0.35em;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.25s;
+    }
+
+    .affirm-close:hover {
+      border-color: rgba(247, 242, 232, 0.4);
+      color: rgba(247, 242, 232, 0.6);
+    }
+
+    .affirm-actions {
+      display: flex;
+      gap: 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .particle {
+      position: absolute;
+      width: 2px;
+      height: 2px;
+      background: var(--warm);
+      border-radius: 50%;
+      pointer-events: none;
+      animation: float linear infinite;
+      opacity: 0;
+    }
+
+    @keyframes shimmer {
+
+      0%,
+      100% {
+        opacity: 0.4;
+        letter-spacing: 0.5em;
+      }
+
+      50% {
+        opacity: 0.8;
+        letter-spacing: 0.7em;
+      }
+    }
+
+    @keyframes affirmIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+      }
+
+      10% {
+        opacity: 0.6;
+      }
+
+      90% {
+        opacity: 0.3;
+      }
+
+      100% {
+        transform: translateY(-120px) translateX(var(--drift));
+        opacity: 0;
+      }
+    }
   </style>
 </head>
 
@@ -669,6 +905,25 @@
       </div>
     </div>
 
+    <!-- Affirmation Section -->
+    <div class="affirmation-section">
+      <div class="affirmation-divider">
+        <span class="affirmation-divider-text">✦ 今日宣言 · AFFIRMATIONS ✦</span>
+      </div>
+      <div class="affirmation-grid">
+        <button class="affirm-btn" data-affirm="wealthy" onclick="openAffirm(this)">💛 我值得富足的人生</button>
+        <button class="affirm-btn" data-affirm="lucky" onclick="openAffirm(this)">🍀 我值得被幸運圍繞</button>
+        <button class="affirm-btn" data-affirm="peaceful" onclick="openAffirm(this)">🕊 我值得心安的人生</button>
+        <button class="affirm-btn" data-affirm="loved" onclick="openAffirm(this)">🌹 我值得被愛與被珍視</button>
+        <button class="affirm-btn" data-affirm="beautiful" onclick="openAffirm(this)">✨ 我值得美麗與豐盛</button>
+        <button class="affirm-btn" data-affirm="healthy" onclick="openAffirm(this)">🌿 我值得健康輕盈的身體</button>
+        <button class="affirm-btn" data-affirm="free" onclick="openAffirm(this)">🦋 我值得自由自在的生活</button>
+        <button class="affirm-btn" data-affirm="growing" onclick="openAffirm(this)">🌱 我值得不斷成長與進步</button>
+        <button class="affirm-btn" data-affirm="safe" onclick="openAffirm(this)">🏡 我值得安全感與穩定</button>
+        <button class="affirm-btn" data-affirm="joyful" onclick="openAffirm(this)">🌈 我值得充滿喜悅的每一天</button>
+      </div>
+    </div>
+
     <footer>願你此刻安好 · 一切都會過去 · 一切都是恩典</footer>
   </div>
 
@@ -683,6 +938,19 @@
     <div class="breath-count" id="breathCount">—</div>
     <div class="med-text" id="medText">找個舒服的姿勢坐好，輕輕閉上眼睛，跟著節奏一起呼吸。</div>
     <button class="med-close" onclick="closeMeditation()">結束練習 · CLOSE</button>
+  </div>
+
+  <!-- Affirmation Overlay -->
+  <div class="affirm-overlay" id="affirmOverlay">
+    <div class="affirm-stars" id="affirmStars">✦ ✧ ✦ ✧ ✦</div>
+    <div class="affirm-main-text" id="affirmMainText"></div>
+    <div class="affirm-sub-text" id="affirmSubText"></div>
+    <div class="affirm-quote" id="affirmQuote"></div>
+    <div class="affirm-source" id="affirmSource"></div>
+    <div class="affirm-actions">
+      <button class="affirm-repeat-btn" onclick="repeatAffirm()">再說一次 · REPEAT</button>
+      <button class="affirm-close" onclick="closeAffirm()">關閉 · CLOSE</button>
+    </div>
   </div>
 
   <script>
@@ -950,6 +1218,123 @@
 
     function closeMeditation() {
       document.getElementById('meditationOverlay').classList.remove('show');
+    }
+
+    // ── Affirmations ──────────────────────────────────────────
+    const affirmations = {
+      wealthy: {
+        main: '我值得<em>富足</em>的人生',
+        sub: '金錢是能量，它流向那些相信自己值得的人。\n你的富足不需要被解釋，不需要被允許——\n它是你與生俱來的權利。',
+        quote: '福者，造福之謂也。命由我作，福自己求。',
+        source: '《了凡四訓》'
+      },
+      lucky: {
+        main: '我值得被<em>幸運</em>圍繞',
+        sub: '幸運不是偶然，是你的頻率吸引來的。\n當你相信好事會發生，你的眼睛就會開始看見它們。\n好事從來沒有停止——只是你現在準備好接住它了。',
+        quote: '天之道，利而不害；聖人之道，為而不爭。',
+        source: '老子《道德經》'
+      },
+      peaceful: {
+        main: '我值得<em>心安</em>的人生',
+        sub: '心安，不是沒有風浪，而是在風浪裡依然知道自己在哪裡。\n這份安靜是你的家，沒有任何外在事物能奪走它。\n你可以回來，隨時，此刻就可以。',
+        quote: '此心安處是吾鄉。',
+        source: '蘇軾《定風波》'
+      },
+      loved: {
+        main: '我值得被<em>愛</em>與被珍視',
+        sub: '你不需要努力表現才值得被愛——\n你本來的樣子，就已經足夠。\n先把這份愛給自己，世界就會用同樣的語言回應你。',
+        quote: '仁者愛人，有禮者敬人。愛人者，人恆愛之；敬人者，人恆敬之。',
+        source: '《孟子·離婁下》'
+      },
+      beautiful: {
+        main: '我值得<em>美麗</em>與豐盛',
+        sub: '美麗從來不是一個尺寸，而一種狀態——\n你照顧自己的方式，就是你告訴世界你有多珍貴。\n豐盛已經在路上，它在尋找一個準備好的人。',
+        quote: '相由心生，境隨心轉。',
+        source: '《大乘起信論》'
+      },
+      healthy: {
+        main: '我值得<em>健康輕盈</em>的身體',
+        sub: '你的身體每天為你工作，從不抱怨。\n感謝它，愛護它，給它你最好的——\n健康是你送給自己最珍貴的禮物。',
+        quote: '身體健康是革命的本錢，心靈健康是幸福的根基。',
+        source: '民間智慧'
+      },
+      free: {
+        main: '我值得<em>自由自在</em>的生活',
+        sub: '你不是為了活在別人的期待裡而生的。\n你有權利選擇自己的節奏、自己的路、自己的快樂。\n自由，從你允許自己做自己開始。',
+        quote: '竹杖芒鞋輕勝馬，誰怕？一蓑煙雨任平生。',
+        source: '蘇軾《定風波》'
+      },
+      growing: {
+        main: '我值得<em>不斷成長</em>與進步',
+        sub: '你今天比昨天多知道了一件事，這就是成長。\n不必和任何人比較，只需要成為昨天更好的自己。\n每一個你走過的困難，都讓你更強大。',
+        quote: '知之者不如好之者，好之者不如樂之者。',
+        source: '《論語·雍也》'
+      },
+      safe: {
+        main: '我值得<em>安全感</em>與穩定',
+        sub: '你值得一個讓你不需要時時警戒的生活。\n值得一個可以放下的空間，值得穩定的愛、穩定的收入、穩定的內心。\n這份穩定，從你相信自己值得擁有它開始。',
+        quote: '知足者富，強行者有志，不失其所者久。',
+        source: '老子《道德經》'
+      },
+      joyful: {
+        main: '我值得充滿<em>喜悅</em>的每一天',
+        sub: '喜悅不是等好事發生之後才有的感受——\n它是你選擇的一種眼光，選擇看見已有的美好。\n今天，就有值得微笑的事，它在等你發現。',
+        quote: '學而時習之，不亦說乎？有朋自遠方來，不亦樂乎？',
+        source: '《論語·學而》'
+      }
+    };
+
+    let currentAffirm = null;
+
+    function openAffirm(btn) {
+      document.querySelectorAll('.affirm-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentAffirm = btn.dataset.affirm;
+      renderAffirm(currentAffirm);
+      document.getElementById('affirmOverlay').classList.add('show');
+      spawnParticles();
+    }
+
+    function renderAffirm(key) {
+      const a = affirmations[key];
+      document.getElementById('affirmMainText').innerHTML = a.main;
+      document.getElementById('affirmSubText').innerHTML = a.sub.replace(/\n/g, '<br>');
+      document.getElementById('affirmQuote').textContent = a.quote;
+      document.getElementById('affirmSource').textContent = '—— ' + a.source;
+      // Re-trigger animation
+      ['affirmMainText', 'affirmSubText', 'affirmQuote', 'affirmSource'].forEach(id => {
+        const el = document.getElementById(id);
+        el.style.animation = 'none';
+        void el.offsetWidth;
+        el.style.animation = '';
+      });
+    }
+
+    function repeatAffirm() {
+      if (currentAffirm) renderAffirm(currentAffirm);
+    }
+
+    function closeAffirm() {
+      document.getElementById('affirmOverlay').classList.remove('show');
+    }
+
+    function spawnParticles() {
+      const overlay = document.getElementById('affirmOverlay');
+      for (let i = 0; i < 18; i++) {
+        setTimeout(() => {
+          const p = document.createElement('div');
+          p.className = 'particle';
+          p.style.left = Math.random() * 100 + 'vw';
+          p.style.top = Math.random() * 60 + 30 + 'vh';
+          p.style.setProperty('--drift', (Math.random() * 60 - 30) + 'px');
+          p.style.animationDuration = (2 + Math.random() * 3) + 's';
+          p.style.animationDelay = (Math.random() * 1) + 's';
+          p.style.width = p.style.height = (1 + Math.random() * 2) + 'px';
+          p.style.opacity = 0;
+          overlay.appendChild(p);
+          setTimeout(() => p.remove(), 5000);
+        }, i * 80);
+      }
     }
 
     updateDate();
